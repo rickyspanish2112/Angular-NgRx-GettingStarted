@@ -19,6 +19,8 @@ const userRoutes: Routes = [
   ],
   declarations: [
     LoginComponent
-  ]
+    ]
 })
-export class UserModule { }
+export class UserModule {
+
+}
