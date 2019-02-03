@@ -38,7 +38,7 @@ export class Load implements Action {
 export class LoadSucess implements Action {
   readonly type = ProductActionTypes.LoadSuccess;
 
-  constructor(public payload: Product) {}
+  constructor(public payload: Product[]) {}
 
 }
 

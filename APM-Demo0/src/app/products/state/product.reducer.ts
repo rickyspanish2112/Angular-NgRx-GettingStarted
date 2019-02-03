@@ -9,15 +9,17 @@ export interface State extends fromRoot.State {
 }
 
 export interface ProductState {
-showProductCode: boolean;
-currentProduct: Product;
-products: Product[];
+  showProductCode: boolean;
+  currentProduct: Product;
+  products: Product[];
+  error: string;
 }
 
 const initialState: ProductState = {
   showProductCode: true,
   currentProduct: null,
-  products: []
+  products: [],
+  error: ''
 };
 
 const getProductFeatureState = createFeatureSelector<ProductState>('products');
@@ -37,7 +39,15 @@ export const getProducts = createSelector(
   state => state.products
 );
 
-export function reducer(state = initialState, action: ProductActions): ProductState {
+export const getError = createSelector(
+  getProductFeatureState,
+  state => state.error
+);
+
+export function reducer(
+  state = initialState,
+  action: ProductActions
+): ProductState {
   switch (action.type) {
     case ProductActionTypes.ToggleProductCode:
       return {
@@ -45,19 +55,19 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         showProductCode: action.payload
       };
 
-      case ProductActionTypes.SetCurrentProduct:
+    case ProductActionTypes.SetCurrentProduct:
       return {
         ...state,
-        currentProduct: { ...action.payload}
+        currentProduct: { ...action.payload }
       };
 
-      case ProductActionTypes.ClearCurrentProduct:
+    case ProductActionTypes.ClearCurrentProduct:
       return {
         ...state,
         currentProduct: null
       };
 
-      case ProductActionTypes.InitializeCurrentProduct:
+    case ProductActionTypes.InitializeCurrentProduct:
       return {
         ...state,
         currentProduct: {
@@ -69,8 +79,21 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         }
       };
 
+    case ProductActionTypes.LoadSuccess:
+      return {
+        ...state,
+        products: action.payload,
+        error: ''
+      };
+
+    case ProductActionTypes.LoadFail:
+      return {
+        ...state,
+        products: [],
+        error: action.payload
+      };
+
     default:
       return state;
   }
 }
-
