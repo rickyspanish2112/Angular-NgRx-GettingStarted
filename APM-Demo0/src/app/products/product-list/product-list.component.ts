@@ -6,6 +6,7 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store, select } from '@ngrx/store';
 import * as fromProduct from '../state/product-reducer';
+import * as fromProductActions from '../state/product.actions';
 
 @Component({
   selector: 'pm-product-list',
@@ -48,10 +49,7 @@ this.store.pipe( select(fromProduct.getShowProductCode)).subscribe(
   }
 
   checkChanged(value: boolean): void {
-    this.store.dispatch({
-      type: 'TOGGLE_PRODUCT_CODE',
-      payload: value
-    });
+    this.store.dispatch(new fromProductActions.ToggleProductCode(value));
   }
 
   newProduct(): void {
