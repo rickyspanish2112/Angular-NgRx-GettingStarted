@@ -5,7 +5,8 @@ import { ProductService } from '../product.service';
 import * as fromProductActions from './product.actions';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { Product } from '../product';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
+import { Action } from '@ngrx/store';
 
 @Injectable()
 export class ProductEffects {
@@ -20,9 +21,21 @@ export class ProductEffects {
     mergeMap((action: fromProductActions.Load) =>
       this.productService.getProducts().pipe(
         map(
-          (products: Product[]) => new fromProductActions.LoadSucess(products)
+          (products: Product[]) => new fromProductActions.LoadSuccess(products)
         ),
-        catchError(err => of(new fromProductActions.LoadPFail(err)))
+        catchError(err => of(new fromProductActions.LoadFail(err)))
+      )
+    )
+  );
+
+  @Effect()
+  updateProduct: Observable<Action> = this.actions.pipe(
+    ofType(fromProductActions.ProductActionTypes.UpdateProduct),
+    map((action: fromProductActions.UpdateProduct) => action.payload),
+    mergeMap((product: Product) =>
+      this.productService.updateProduct(product).pipe(
+        map((updatedProduct: Product) => (new fromProductActions.UpdateProductSuccess(updatedProduct))),
+         catchError(err => of(new fromProductActions.UpdateProductFail(err)))
       )
     )
   );
